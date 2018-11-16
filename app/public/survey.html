@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    <style>/* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+        #match {
+            width: 100%;
+            height: auto;
+            text-align: center;
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }</style>
+</head>
+<body>
+    <h1>Answer all the questions to find your match!</h1>
+    <h3>Name</h3>
+    <input type="text" id="name" required>
+    <h3>Photo(url)</h3>
+    <input type="text" id="photo" required>
+    <br>
+    <h3>What is your favorite color?</h3>
+    <select id="q1">
+        <option value="1">Red</option>
+        <option value="2">Green</option>
+        <option value="3">Blue</option>
+    </select>
+    <br>
+    <h3>What is your favorite kind of pet?</h3>
+    <select id="q2">
+        <option value="1">Cats</option>
+        <option value="2">Dogs</option>
+        <option value="3">Fish</option>
+    </select>
+    <br>
+    <h3>What is your worst fear?</h3>
+    <select id="q3">
+        <option value="1">Clowns</option>
+        <option value="2">Zombies</option>
+        <option value="3">Dentists</option>
+    </select>
+    <br>
+    <button type="submit" id="submit">Find my match!</button>
+
+    <a href="api/friends">API</a>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p><strong>You matched with...</strong></p>
+          <div id="match"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script type="text/javascript">
+    $("#submit").on("click", function(event){
+        event.preventDefault();
+
+        var newPerson = {
+            name: $("#name").val().trim(),
+            photo: $("#photo").val().trim(),
+            answers: [ parseInt($("#q1").val()), parseInt($("#q2").val()), parseInt($("#q3").val()) ]
+        }
+
+        console.log(newPerson)
+
+        $.post("/api/friends", newPerson, function(data) {
+            console.log(data)
+            $("#match").empty()
+            $("#match").append($("<h2>").text(data[0]))
+            $("#match").append($("<img>").attr({src: data[1], alt: "Your match"}))
+            $(".modal").fadeIn()
+        })
+    })
+
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+
+
+    span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+    </script>
+</body>
+</html>
